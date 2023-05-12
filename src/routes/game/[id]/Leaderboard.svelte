@@ -1,5 +1,8 @@
 <script lang="ts">
-	const players = [
+	import type { Player } from '../../../types';
+
+	// SSE to get leaderboard state
+	export const players: Array<Player> = [
 		{ name: 'Mike', points: 10 },
 		{ name: 'Linus', points: 4 },
 		{ name: 'John', points: 3 },
@@ -7,8 +10,6 @@
 		{ name: 'Doe', points: 1 },
 		{ name: 'Helen', points: 0 }
 	];
-
-	$: players.sort((a, b) => b.points - a.points);
 </script>
 
 <div>

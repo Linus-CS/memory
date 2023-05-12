@@ -1,17 +1,26 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import Card from './Card.svelte';
 
-	let cards = [...Array(54).keys()];
-	let openCards: Array<number> = [];
+	export let openCards: Array<number> = [];
+	export let lock = false;
 	let hideCards: Array<number> = [];
-	let lock = false;
+	let cards = [...Array(54).keys()];
+
+	const gameId = $page.params.id;
 
 	function handleCardClick(event: CustomEvent<number>) {
 		openCards.push(event.detail);
+		closeCards();
+	}
+
+	$: closeCards();
+
+	function closeCards() {
 		if (openCards.length === 2) {
 			lock = true;
 			// Send request with ids of both cards to server
-			const pair = true;
+			const pair = false;
 			if (!pair) {
 				setTimeout(() => {
 					openCards = [];
@@ -19,10 +28,9 @@
 				}, 2000);
 			} else {
 				setTimeout(() => {
-					hideCards.push(...openCards);
+					hideCards = [...hideCards, ...openCards];
 					openCards = [];
 					lock = false;
-					console.log(hideCards);
 				}, 1000);
 			}
 		}

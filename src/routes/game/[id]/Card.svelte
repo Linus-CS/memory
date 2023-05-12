@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { PUBLIC_API_ENDPOINT } from '$env/static/public';
 	import Icon from '$lib/assets/playing-card.png';
 	import { createEventDispatcher } from 'svelte';
+	import { page } from '$app/stores';
 
 	export let id: number;
 	export let reveal: boolean = false;
@@ -11,12 +13,17 @@
 
 	$: if (!reveal) backgroundImg = '';
 
+	const gameId = $page.params.id;
+
 	async function clicked() {
 		if (locked || reveal || hide) return;
-		// Send request to server and then do show with returned image value
-		// const response = await fetch('/api/card');
-		// const img = response.blob();
-		// setImageSourceUrl(URL.createObjectURL(image));
+
+		// const res = await fetch(
+		// 	`${PUBLIC_API_ENDPOINT}/click?gameId=${gameId}&cardId=${id}&token=${3}`
+		// );
+		// const img = await res.blob();
+		// backgroundImg = URL.createObjectURL(img);
+
 		backgroundImg = 'https://cdn-icons-png.flaticon.com/512/1998/1998659.png';
 		reveal = true;
 		dispatch('cardClicked', id);

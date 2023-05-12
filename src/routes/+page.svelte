@@ -1,23 +1,38 @@
 <script lang="ts">
 	import '../app.css';
-	import { goto } from '$app/navigation';
+	import { PUBLIC_API_ENDPOINT } from '$env/static/public';
+
 	import JoinInput from './JoinInput.svelte';
+	import LoadingSpinner from './LoadingSpinner.svelte';
 
-	let value: string = '';
-	let failed = false;
+	// Make a request to server and only show join if game exists
+	async function getGameId() {
+		return 1;
+		const res = await fetch(`${PUBLIC_API_ENDPOINT}/ping`);
+		const id = await res.text();
+		const gameId = parseInt(id);
+		if (res.ok && !isNaN(gameId)) return gameId;
+		else throw new Error('No game found');
+	}
 
-	function join() {
-		if (value.trim() !== 'Linus') {
-			failed = true;
-			return;
-		}
-		goto('/game/1');
+	const promise = getGameId();
+
+	async function joinWithName(event: CustomEvent<string>) {
+		// Request server with name and set cookie for token
 	}
 </script>
 
 <h1 class="text-center primary-font text-7xl mt-56">Memory</h1>
 <div class="flex flex-col items-center justify-center mt-10">
-	<JoinInput on:click={join} bind:value />
+	{#await promise}
+		<LoadingSpinner />
+	{:then gameId}
+		<JoinInput {gameId} on:join={joinWithName} />
+	{:catch error}
+		<p class="text-center text-2xl mb-4">
+			Momentan gibt es kein Spiel, dem beigetreten werden kann.
+		</p>
+	{/await}
 </div>
 
 <style lang="postcss">
@@ -35,9 +50,5 @@
 
 	:global(.secondary-font) {
 		font-family: 'Poppins', sans-serif;
-	}
-
-	.join-button {
-		background-color: #9cec5b;
 	}
 </style>
