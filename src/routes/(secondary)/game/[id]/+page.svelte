@@ -1,10 +1,10 @@
 <script lang="ts">
-	import '../../../app.css';
+	import '../../../../app.css';
 	import { PUBLIC_API_ENDPOINT } from '$env/static/public';
 	import { page } from '$app/stores';
 	import Cards from './Cards.svelte';
 	import Leaderboard from './Leaderboard.svelte';
-	import type { Player } from '../../../types';
+	import type { Player } from '../../../../types';
 
 	let turn = true;
 	let openCards: Array<number> = [];
@@ -32,7 +32,6 @@
 	});
 </script>
 
-<h1 class="text-center primary-font text-lg mt-2">Memory</h1>
 <div class="grid grid-cols-5 mt-8 w-full h-full">
 	<div class="mx-auto">
 		<Leaderboard {players} />

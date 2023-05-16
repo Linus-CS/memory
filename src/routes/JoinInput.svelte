@@ -1,17 +1,11 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { createEventDispatcher } from 'svelte';
 
-	export let gameId: number;
 	const dispatch = createEventDispatcher();
 
 	let value: string;
 
 	function join() {
-		if (value.trim() !== 'Linus') {
-			return;
-		}
-		goto(`/game/${gameId}`);
 		dispatch('join', value.trim());
 	}
 </script>
