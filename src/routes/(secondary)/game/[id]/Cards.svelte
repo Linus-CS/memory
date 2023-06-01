@@ -1,13 +1,10 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import Card from './Card.svelte';
 
 	export let openCards: Array<number> = [];
 	export let lock = false;
 	let hideCards: Array<number> = [];
 	let cards = [...Array(54).keys()];
-
-	const gameId = $page.params.id;
 
 	function handleCardClick(event: CustomEvent<number>) {
 		openCards.push(event.detail);
@@ -19,7 +16,6 @@
 	function closeCards() {
 		if (openCards.length === 2) {
 			lock = true;
-			// Send request with ids of both cards to server
 			const pair = false;
 			if (!pair) {
 				setTimeout(() => {
@@ -37,7 +33,7 @@
 	}
 </script>
 
-<div class="grid grid-cols-9 gap-5">
+<div class="grid grid-cols-9 gap-3">
 	{#each cards as card}
 		<Card
 			on:cardClicked={handleCardClick}

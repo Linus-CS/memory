@@ -18,23 +18,24 @@
 	async function clicked() {
 		if (locked || reveal || hide) return;
 
-		// const res = await fetch(
-		// 	`${PUBLIC_API_ENDPOINT}/click?gameId=${gameId}&cardId=${id}&token=${3}`
-		// );
-		// const img = await res.blob();
-		// backgroundImg = URL.createObjectURL(img);
+		const res = await fetch(`${PUBLIC_API_ENDPOINT}/pick_card?id=${gameId}&card=${id}`, {
+			method: 'POST',
+			credentials: 'include',
+			mode: 'cors'
+		});
+		backgroundImg = await res.json();
 
-		backgroundImg = 'https://cdn-icons-png.flaticon.com/512/1998/1998659.png';
+		// backgroundImg = 'https://cdn-icons-png.flaticon.com/512/1998/1998659.png';
 		reveal = true;
 		dispatch('cardClicked', id);
 	}
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="flip-card w-20 h-20" on:click={clicked}>
+<div class="flip-card lg:w-20 lg:h-20 w-8 h-8" on:click={clicked}>
 	<div class="flip-card-inner" class:hidden={hide} class:flip={reveal}>
 		<div class="flip-card-front flex justify-center items-center">
-			<img class="w-10 opacity-30" src={Icon} alt="" />
+			<img class="lg:w-10 w-5 opacity-30" src={Icon} alt="" />
 		</div>
 		<div class="flip-card-back flex items-center justify-center">
 			<img src={backgroundImg} alt={id.toString()} />

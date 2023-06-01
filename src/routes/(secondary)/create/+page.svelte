@@ -1,18 +1,16 @@
 <script lang="ts">
 	import { PUBLIC_API_ENDPOINT } from '$env/static/public';
-	export let data;
 
 	let value: string;
 	let success: boolean | undefined;
 
 	async function create() {
 		try {
-			const res = await fetch(
-				`http://${PUBLIC_API_ENDPOINT}/create?master_key=${data.master_key}&id=${value}`,
-				{
-					method: 'POST'
-				}
-			);
+			const res = await fetch(`${PUBLIC_API_ENDPOINT}/create?id=${value}`, {
+				method: 'POST',
+				credentials: 'include',
+				mode: 'cors'
+			});
 			if (res.ok) success = true;
 			else success = false;
 		} catch (error) {

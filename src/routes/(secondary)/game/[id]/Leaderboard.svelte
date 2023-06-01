@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Player } from '../../../types';
+	import type { Player } from '../../../../types';
 
 	// SSE to get leaderboard state
 	export const players: Array<Player> = [
