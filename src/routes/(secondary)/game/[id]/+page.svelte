@@ -7,6 +7,8 @@
 	import { onMount } from 'svelte';
 
 	let running = true;
+	let finished = false;
+	let winner: String = '';
 	let ready = false;
 	let openCards: Map<number, string> = new Map();
 	let hiddenCards: Array<number> = [];
@@ -38,7 +40,9 @@
 		});
 
 		eventSrc.addEventListener('gameOver', (event) => {
-			console.log(event.data);
+			let data = JSON.parse(event.data);
+			finished = data.game_state == 'Finished';
+			winner = players[0][0];
 		});
 
 		eventSrc.addEventListener('state', (event) => {
@@ -68,16 +72,23 @@
 	}
 </script>
 
-<div class="lg:grid lg:grid-cols-5 mt-8 w-full h-full">
-	<div class="mb-8 mx-16 lg:mt-0 mt-10">
-		<Leaderboard {players} />
-		{#if !ready && !running}
-			<button on:click={makeReady} class="bg-green-500 rounded p-2 mt-8 hover:bg-green-400"
-				>Bereit</button
-			>
-		{/if}
+{#if finished}
+	<div class="flex flex-col items-center mt-20">
+		<h1 class="secondary-font font-bold text-2xl mb-2">Spiel zuende!</h1>
+		<h2 class="secondary-font font-bold text-xl mb-2">👑{winner}</h2>
 	</div>
-	<div class="col-span-3 m-auto mx-4">
-		<Cards {hiddenCards} bind:openCards />
+{:else}
+	<div class="lg:grid lg:grid-cols-5 mt-8 w-full h-full">
+		<div class="mb-8 mx-16 lg:mt-0 mt-10">
+			<Leaderboard {players} />
+			{#if !ready && !running}
+				<button on:click={makeReady} class="bg-green-500 rounded p-2 mt-8 hover:bg-green-400"
+					>Bereit</button
+				>
+			{/if}
+		</div>
+		<div class="col-span-3 m-auto mx-4">
+			<Cards {hiddenCards} bind:openCards />
+		</div>
 	</div>
-</div>
+{/if}

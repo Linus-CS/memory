@@ -28,11 +28,11 @@
 				});
 				const game_id = await res.json();
 				if (res.status === 410) {
-					document.cookie = cookie.serialize('has_token', '', {
+					document.cookie = cookie.serialize('has_token', 'false', {
 						maxAge: -1,
 						path: '/',
 						sameSite: 'strict',
-						secure: true
+						secure: false
 					});
 					invalidate('app:main');
 				}
@@ -58,11 +58,7 @@
 		});
 
 		if (res.ok) {
-			document.cookie = cookie.serialize('has_token', '', {
-				path: '/',
-				sameSite: 'strict',
-				secure: true
-			});
+			document.cookie = 'has_token=true;max-age=31536000';
 			goto(`/game/${id}`);
 		}
 	}
