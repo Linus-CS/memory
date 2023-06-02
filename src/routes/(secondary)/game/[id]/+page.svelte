@@ -30,6 +30,13 @@
 			openCards = openCards;
 		});
 
+		eventSrc.addEventListener('hideCard', (event) => {
+			let data = JSON.parse(event.data);
+			setTimeout(() => {
+				hiddenCards = [...hiddenCards, data.card_id];
+			}, 1500);
+		});
+
 		eventSrc.addEventListener('gameOver', (event) => {
 			console.log(event.data);
 		});
@@ -71,6 +78,6 @@
 		{/if}
 	</div>
 	<div class="col-span-3 m-auto mx-4">
-		<Cards {hiddenCards} {openCards} />
+		<Cards {hiddenCards} bind:openCards />
 	</div>
 </div>

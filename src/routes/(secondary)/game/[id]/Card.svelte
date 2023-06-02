@@ -8,8 +8,6 @@
 	export let hide: boolean = false;
 	export let backgroundImg: string | undefined;
 
-	$: if (!reveal) backgroundImg = '';
-
 	const gameId = $page.params.id;
 
 	async function clicked() {
@@ -46,7 +44,7 @@
 		width: 100%;
 		height: 100%;
 		text-align: center;
-		transition: transform 0.8s;
+		transition: transform 0.4s;
 		transform-style: preserve-3d;
 	}
 
@@ -70,7 +68,7 @@
 
 	.flip-card-back {
 		background-color: white;
-		color: red;
+		color: rgb(189, 189, 189);
 		transform: rotateY(180deg);
 	}
 </style>

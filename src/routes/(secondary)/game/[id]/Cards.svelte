@@ -5,12 +5,16 @@
 	export let hiddenCards: Array<number> = [];
 	let cards = [...Array(54).keys()];
 
-	$: closeCards();
+	$: closeCards(openCards);
 
-	function closeCards() {
-		if (openCards.values.length === 2) {
+	function closeCards(cards: Map<number, string>) {
+		if (cards.size === 2) {
+			let removeCards = Array.from(cards.keys());
 			setTimeout(() => {
-				openCards = new Map();
+				for (const remove of removeCards) {
+					openCards.delete(remove);
+				}
+				openCards = openCards;
 			}, 2000);
 		}
 	}

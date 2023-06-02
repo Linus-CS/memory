@@ -1,1 +1,1 @@
-export type Player = [string, number, boolean] 
+export type Player = [string, number, boolean, boolean] 
