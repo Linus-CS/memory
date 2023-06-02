@@ -1,1 +1,1 @@
-export type Player = { name: string, points: number }
+export type Player = [string, number, boolean] 

@@ -23,7 +23,8 @@
 			try {
 				const res = await fetch(`${PUBLIC_API_ENDPOINT}/ping`, {
 					credentials: 'include',
-					mode: 'cors'
+					mode: 'cors',
+					cache: 'no-cache'
 				});
 				const game_id = await res.json();
 				if (res.status === 410) {

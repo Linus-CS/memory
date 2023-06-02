@@ -1,34 +1,17 @@
 <script lang="ts">
 	import Card from './Card.svelte';
 
-	export let openCards: Array<number> = [];
-	export let lock = false;
-	let hideCards: Array<number> = [];
+	export let openCards: Map<number, string> = new Map();
+	export let hiddenCards: Array<number> = [];
 	let cards = [...Array(54).keys()];
-
-	function handleCardClick(event: CustomEvent<number>) {
-		openCards.push(event.detail);
-		closeCards();
-	}
 
 	$: closeCards();
 
 	function closeCards() {
-		if (openCards.length === 2) {
-			lock = true;
-			const pair = false;
-			if (!pair) {
-				setTimeout(() => {
-					openCards = [];
-					lock = false;
-				}, 2000);
-			} else {
-				setTimeout(() => {
-					hideCards = [...hideCards, ...openCards];
-					openCards = [];
-					lock = false;
-				}, 1000);
-			}
+		if (openCards.values.length === 2) {
+			setTimeout(() => {
+				openCards = new Map();
+			}, 2000);
 		}
 	}
 </script>
@@ -36,11 +19,10 @@
 <div class="grid grid-cols-9 gap-3">
 	{#each cards as card}
 		<Card
-			on:cardClicked={handleCardClick}
 			id={card}
-			hide={hideCards.includes(card)}
-			reveal={openCards.includes(card)}
-			locked={lock}
+			hide={hiddenCards.includes(card)}
+			reveal={openCards.has(card)}
+			backgroundImg={openCards.get(card)}
 		/>
 	{/each}
 </div>

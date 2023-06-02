@@ -1,33 +1,25 @@
 <script lang="ts">
 	import { PUBLIC_API_ENDPOINT } from '$env/static/public';
 	import Icon from '$lib/assets/playing-card.png';
-	import { createEventDispatcher } from 'svelte';
 	import { page } from '$app/stores';
 
 	export let id: number;
 	export let reveal: boolean = false;
 	export let hide: boolean = false;
-	export let locked: boolean = false;
-	let backgroundImg: string;
-	const dispatch = createEventDispatcher();
+	export let backgroundImg: string | undefined;
 
 	$: if (!reveal) backgroundImg = '';
 
 	const gameId = $page.params.id;
 
 	async function clicked() {
-		if (locked || reveal || hide) return;
+		if (reveal || hide) return;
 
-		const res = await fetch(`${PUBLIC_API_ENDPOINT}/pick_card?id=${gameId}&card=${id}`, {
+		await fetch(`${PUBLIC_API_ENDPOINT}/pick_card?id=${gameId}&card=${id}`, {
 			method: 'POST',
 			credentials: 'include',
 			mode: 'cors'
 		});
-		backgroundImg = await res.json();
-
-		// backgroundImg = 'https://cdn-icons-png.flaticon.com/512/1998/1998659.png';
-		reveal = true;
-		dispatch('cardClicked', id);
 	}
 </script>
 
@@ -77,8 +69,8 @@
 	}
 
 	.flip-card-back {
-		background-color: red;
-		color: white;
+		background-color: white;
+		color: red;
 		transform: rotateY(180deg);
 	}
 </style>

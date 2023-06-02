@@ -1,65 +1,64 @@
 <script lang="ts">
 	import '../../../../app.css';
 	import { PUBLIC_API_ENDPOINT } from '$env/static/public';
-	import { page } from '$app/stores';
 	import Cards from './Cards.svelte';
 	import Leaderboard from './Leaderboard.svelte';
 	import type { Player } from '../../../../types';
 	import { onMount } from 'svelte';
 
 	let running = true;
-	let turn = false;
 	let ready = false;
-	let openCards: Array<number> = [];
+	let openCards: Map<number, string> = new Map();
+	let hiddenCards: Array<number> = [];
 	let players: Array<Player> = [];
-	$: players.sort((a, b) => b.points - a.points);
+	let eventSrc: EventSource;
+
+	$: players.sort((a, b) => b[1] - a[1]);
 
 	onMount(() => {
-		async function check_state() {
-			const res = await fetch(`${PUBLIC_API_ENDPOINT}/state`, {
-				credentials: 'include',
-				mode: 'cors'
-			});
-			const json = await res.json();
-			running = json.game_state == 'Running';
-			ready = json.ready;
-		}
+		eventSrc = new EventSource(`${PUBLIC_API_ENDPOINT}/game`, {
+			withCredentials: true
+		});
+		eventSrc.addEventListener('leaderboard', (event) => {
+			let data = JSON.parse(event.data);
+			players = data.players;
+		});
 
-		check_state();
+		eventSrc.addEventListener('flipCard', (event) => {
+			let data = JSON.parse(event.data);
+			openCards.set(data.card_id, data.img_path);
+			openCards = openCards;
+		});
+
+		eventSrc.addEventListener('gameOver', (event) => {
+			console.log(event.data);
+		});
+
+		eventSrc.addEventListener('state', (event) => {
+			const data = JSON.parse(event.data);
+			players = data.players;
+			ready = data.ready;
+			running = data.game_state == 'Running';
+			for (const [card_id, img_path] of data.flipped) {
+				openCards.set(card_id, img_path);
+			}
+			openCards = openCards;
+			hiddenCards = data.hidden;
+		});
+
+		return () => {
+			eventSrc.close();
+		};
 	});
 
 	async function makeReady() {
-		let res = await fetch(`${PUBLIC_API_ENDPOINT}/ready`, {
+		const res = await fetch(`${PUBLIC_API_ENDPOINT}/ready`, {
 			method: 'POST',
 			credentials: 'include',
 			mode: 'cors'
 		});
-
 		if (res.ok) ready = true;
-		turn = true;
 	}
-
-	const eventSrc = new EventSource(`${PUBLIC_API_ENDPOINT}/game`, {
-		withCredentials: true
-	});
-
-	eventSrc.addEventListener('leaderboard', (event) => {
-		console.log(event.data);
-	});
-
-	eventSrc.addEventListener('flipCard', (event) => {
-		console.log(event.data);
-	});
-
-	eventSrc.addEventListener('turn', (event) => {
-		console.log(event.data);
-		console.log(event.data.turn);
-		turn = event.data.turn;
-	});
-
-	eventSrc.addEventListener('gameOver', (event) => {
-		console.log(event.data);
-	});
 </script>
 
 <div class="lg:grid lg:grid-cols-5 mt-8 w-full h-full">
@@ -72,6 +71,6 @@
 		{/if}
 	</div>
 	<div class="col-span-3 m-auto mx-4">
-		<Cards {openCards} lock={!turn} />
+		<Cards {hiddenCards} {openCards} />
 	</div>
 </div>
