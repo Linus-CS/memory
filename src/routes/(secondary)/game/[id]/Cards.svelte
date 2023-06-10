@@ -20,13 +20,15 @@
 	}
 </script>
 
-<div class="grid grid-cols-9 gap-3">
-	{#each cards as card}
-		<Card
-			id={card}
-			hide={hiddenCards.includes(card)}
-			reveal={openCards.has(card)}
-			backgroundImg={openCards.get(card)}
-		/>
-	{/each}
+<div class="pt-10">
+	<div class="grid grid-cols-9 gap-3">
+		{#each cards as card}
+			<Card
+				id={card}
+				hide={hiddenCards.includes(card)}
+				reveal={openCards.has(card)}
+				backgroundImg={openCards.get(card)}
+			/>
+		{/each}
+	</div>
 </div>
